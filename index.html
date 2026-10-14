@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IPAS - Zat dan Perubahannya</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--tx:#1b2430;--mu:#5b6776;--pr:#2f6fed;--ok:#1e9e5a;--no:#d64545;--bd:#d9e1ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#10151d;--card:#1a212c;--tx:#e8edf5;--mu:#9aa6b6;--pr:#5b8cff;--bd:#2c3646}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55}
+section.s{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px 20px;text-align:center}
+.hero{background:linear-gradient(135deg,#2f6fed,#7b4bd8);color:#fff}.hero h1{font-size:clamp(2.2rem,8vw,4rem);margin:0}.hero p{opacity:.9}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 60px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:14px 0;text-align:left}
+.names{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+.names span{background:var(--pr);color:#fff;padding:10px 18px;border-radius:99px;font-weight:600}
+.menu{display:grid;gap:14px;width:100%;max-width:420px;margin-top:16px}
+button,select{font:inherit}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:12px;padding:13px 20px;cursor:pointer;font-weight:600}
+.btn.big{padding:20px;font-size:1.2rem}.btn.alt{background:transparent;color:var(--pr);border:2px solid var(--pr)}
+.btn:disabled{opacity:.5}
+.opt{display:block;width:100%;text-align:left;background:var(--card);color:var(--tx);border:2px solid var(--bd);border-radius:10px;padding:12px;margin:8px 0;cursor:pointer}
+.opt.sel{border-color:var(--pr)}.opt.ok{border-color:var(--ok);background:rgba(30,158,90,.15)}.opt.no{border-color:var(--no);background:rgba(214,69,69,.15)}
+table{width:100%;border-collapse:collapse}td,th{border:1px solid var(--bd);padding:8px;text-align:left}
+select{padding:8px;border-radius:8px;background:var(--card);color:var(--tx);border:1px solid var(--bd);width:100%}
+.view{display:none}.view.on{display:block}
+.fb{margin:8px 0;font-weight:600}.good{color:var(--ok)}.bad{color:var(--no)}
+h2{margin-top:0}.tag{color:var(--mu);font-size:.9rem}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:320px;margin:14px auto}
+.cell{aspect-ratio:1;font-size:2.4rem;font-weight:800;background:var(--card);color:var(--tx);border:2px solid var(--bd);border-radius:12px;cursor:pointer}
+input{font:inherit;padding:10px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);width:100%;margin:6px 0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal.on{display:flex}.modal .card{max-width:520px;width:100%;max-height:90vh;overflow:auto}
+.center{text-align:center}
+@keyframes grad{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+@keyframes fl{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-40px) scale(1.15)}100%{transform:translateY(0) scale(1)}}
+@keyframes fi{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+body{background:radial-gradient(circle at 10% 0,rgba(47,111,237,.14),transparent 40%),radial-gradient(circle at 90% 100%,rgba(224,64,154,.12),transparent 40%),var(--bg);background-attachment:fixed}
+.hero{background:linear-gradient(120deg,#2f6fed,#7b4bd8,#e0409a,#2f6fed);background-size:300% 300%;animation:grad 10s ease infinite;position:relative;overflow:hidden}
+.hero h1{animation:pop .9s both;text-shadow:0 6px 24px rgba(0,0,0,.3)}
+.hero p{animation:fi 1s .6s both}
+.hero .arrow{font-size:2.2rem;animation:bounce 1.4s infinite;margin-top:18px}
+.bub{position:absolute;border-radius:50%;background:rgba(255,255,255,.18);animation:fl 6s ease-in-out infinite}
+h2{background:linear-gradient(90deg,var(--pr),#e0409a);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.9rem}
+.view.on{animation:fi .5s both}
+.card{box-shadow:0 8px 28px rgba(30,60,120,.1);transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(47,111,237,.2)}
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s,transform .8s}.rv.in{opacity:1;transform:none}
+.names span{animation:pop .6s both,fl 4s ease-in-out infinite;box-shadow:0 6px 16px rgba(47,111,237,.35)}
+.names span:nth-child(2){animation-delay:.15s,.5s;background:#e0409a}.names span:nth-child(3){animation-delay:.3s,1s;background:#1e9e5a}.names span:nth-child(4){animation-delay:.45s,1.5s;background:#f08a24}
+.btn{transition:transform .2s,box-shadow .2s;box-shadow:0 6px 16px rgba(47,111,237,.3)}.btn:hover:not(:disabled){transform:translateY(-3px) scale(1.04)}.btn:active{transform:scale(.97)}
+.menu .btn:nth-child(1){background:linear-gradient(135deg,#2f6fed,#5b8cff)}.menu .btn:nth-child(2){background:linear-gradient(135deg,#e0409a,#ff7ab8)}.menu .btn:nth-child(3){background:linear-gradient(135deg,#1e9e5a,#4cd68c)}
+.opt{transition:transform .2s,border-color .2s}.opt:hover:not(:disabled){transform:translateX(6px);border-color:var(--pr)}
+.opt.ok{animation:pop .4s}.opt.no{animation:shake .4s}
+.cell{transition:transform .2s,background .2s}.cell:hover{transform:scale(1.06);background:rgba(47,111,237,.12)}.cell:not(:empty){animation:pop .35s}
+.cell:not(:empty){color:var(--pr)}
+.modal.on .card{animation:pop .35s}
+.cf{position:fixed;top:-30px;font-size:1.6rem;pointer-events:none;z-index:99;animation:fall 3s linear forwards}
+</style></head><body>
+
+<div id="home" class="view on">
+<section class="s hero"><span class="bub" style="width:90px;height:90px;left:8%;top:15%"></span><span class="bub" style="width:60px;height:60px;right:12%;top:25%;animation-delay:1s"></span><span class="bub" style="width:130px;height:130px;left:70%;bottom:10%;animation-delay:2s"></span><span class="bub" style="width:50px;height:50px;left:20%;bottom:18%;animation-delay:3s"></span><h1>Welcome to our website</h1><p>Belajar IPAS: Zat dan Perubahannya 🧪</p><div class="arrow">↓</div></section>
+<section class="s"><h2>Perkenalan</h2><p>Kami kelompok IPAS, kelas X:</p>
+<div class="names"><span>Obed</span><span>Regina</span><span>Naufal</span><span>Reva</span></div><p class="tag">Mata pelajaran: IPAS</p></section>
+<section class="s"><h2>Tujuan Pembelajaran</h2>
+<div class="card" style="max-width:560px"><ul><li>Membedakan unsur (logam, nonlogam, semilogam), senyawa, dan campuran.</li><li>Menjelaskan perubahan fisika dan perubahan kimia beserta cirinya.</li><li>Menyebutkan contoh penerapannya dalam kehidupan sehari-hari.</li></ul></div></section>
+<section class="s"><h2>Mau ngapain?</h2><div class="menu">
+<button class="btn big" onclick="go('materi')">📖 Materi</button>
+<button class="btn big" onclick="startQuiz()">📝 Quiz</button>
+<button class="btn big" onclick="go('game')">🎮 Game</button></div></section>
+</div>
+
+<div id="materi" class="view"><div class="wrap">
+<div id="m1"><div class="card"><h2>Zat dan Perubahannya (1/4)</h2>
+<p>Zat adalah segala sesuatu yang menempati ruang dan memiliki massa. Zat dibagi menjadi zat tunggal (unsur dan senyawa) dan campuran.</p>
+<h3>1. Unsur</h3><p>Zat tunggal yang tidak dapat diuraikan lagi menjadi zat lebih sederhana dengan cara kimia.</p>
+<ul><li><b>Logam:</b> mengilap, menghantarkan listrik &amp; panas, dapat ditempa. Contoh: besi (Fe).</li><li><b>Nonlogam:</b> rapuh, tidak mengilap, umumnya isolator. Contoh: oksigen (O₂).</li><li><b>Semilogam:</b> sifat di antara logam dan nonlogam. Contoh: silikon (Si).</li></ul>
+<h3>2. Senyawa</h3><p>Zat tunggal dari dua unsur atau lebih yang bersenyawa dengan perbandingan tetap, dan dapat diuraikan secara kimia. Contoh: air (H₂O).</p>
+<h3>3. Campuran</h3><p>Gabungan dua zat atau lebih tanpa perbandingan tetap, sifat zat penyusun tetap. Contoh: air garam (homogen) atau pasir + air (heterogen).</p></div>
+<button class="btn" onclick="mp(2)">Next page →</button></div>
+
+<div id="m2" style="display:none"><div class="card"><h2>Latihan 1 (2/4)</h2><p>Pilih klasifikasi tiap zat. Semua harus dijawab.</p>
+<table id="t1"></table><div class="fb" id="t1fb"></div></div>
+<button class="btn" id="n2" style="display:none" onclick="mp(3)">Next page →</button></div>
+
+<div id="m3" style="display:none"><div class="card"><h2>Perubahan Fisika &amp; Kimia (3/4)</h2>
+<h3>Perubahan Fisika</h3><p>Perubahan zat tanpa terbentuk zat baru; hanya bentuk, wujud, atau ukuran yang berubah (dapat kembali seperti semula).</p>
+<p><b>Ciri:</b> tidak terbentuk zat baru, sifat kimia tetap, umumnya mudah kembali.</p>
+<p><b>Contoh penerapan:</b> es mencair, menjemur pakaian, membuat larutan garam, memisahkan campuran dengan penyaringan.</p>
+<h3>Perubahan Kimia</h3><p>Perubahan yang menghasilkan zat baru dengan sifat berbeda.</p>
+<p><b>Ciri:</b> terbentuk gas (gelembung), perubahan warna, terbentuk endapan, perubahan suhu (kalor/cahaya), perubahan bau.</p>
+<p><b>Contoh penerapan:</b> memasak makanan, fotosintesis, pembakaran bahan bakar, besi berkarat, fermentasi tape.</p></div>
+<button class="btn" onclick="mp(4)">Next page →</button></div>
+
+<div id="m4" style="display:none"><div class="card"><h2>Latihan 2 (4/4)</h2><div id="p2"></div></div>
+<button class="btn" id="b4" style="display:none" onclick="go('home')">🏠 Back to home</button></div>
+</div></div>
+
+<div id="quiz" class="view"><div class="wrap"><div class="card" id="qbox"></div></div></div>
+
+<div id="game" class="view"><div class="wrap center">
+<div class="card" id="gsetup"><h2>🎮 Tic Tac Toe Sains</h2>
+<p style="text-align:left">Aturan: setiap mau menaruh tanda, pemain harus menjawab soal pilihan ganda tentang materi. Benar → tanda dipasang. Salah → giliran dilewati.</p>
+<input id="pX" placeholder="Nama pemain X"><input id="pO" placeholder="Nama pemain O">
+<button class="btn" onclick="startGame()">Mulai</button></div>
+<div id="gplay" style="display:none"><div class="card center"><h3 id="gturn"></h3><div class="board" id="board"></div><div class="fb" id="gmsg"></div>
+<button class="btn alt" onclick="startGame()">Ulangi papan</button></div></div>
+<button class="btn" style="margin-top:12px" onclick="go('home')">🏠 Back home</button>
+</div>
+<div class="modal" id="gmodal"><div class="card" id="gq"></div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+function go(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));$(v).classList.add('on');scrollTo(0,0);if(v==='materi')mp(1)}
+function mp(n){[1,2,3,4].forEach(i=>$('m'+i).style.display=i===n?'block':'none');scrollTo(0,0)}
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+document.querySelectorAll('section.s:not(.hero)>*').forEach(e=>e.classList.add('rv'));
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+function confetti(){const e=['🎉','✨','🧪','⭐','🎊','⚗️'];for(let i=0;i<40;i++){const s=document.createElement('span');s.className='cf';s.textContent=e[i%e.length];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*1.2+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),4500)}}
+// Latihan 1
+const L1=[["Emas (Au)","Unsur"],["Air (H₂O)","Senyawa"],["Udara","Campuran"],["Garam dapur (NaCl)","Senyawa"],["Gas oksigen (O₂)","Unsur"]];
+let done1=0;
+$('t1').innerHTML='<tr><th>Zat</th><th>Pilihan</th></tr>'+L1.map((r,i)=>`<tr><td>${r[0]}</td><td><select id="s${i}" onchange="ans1(${i})"><option value="">-- pilih --</option><option>Unsur</option><option>Senyawa</option><option>Campuran</option></select><div class="fb" id="f${i}"></div></td></tr>`).join('');
+function ans1(i){const s=$('s'+i);if(!s.value)return;s.disabled=true;const ok=s.value===L1[i][1];$('f'+i).className='fb '+(ok?'good':'bad');$('f'+i).textContent=ok?'Benar ✓':'Salah, jawabannya '+L1[i][1];if(++done1===5){$('t1fb').textContent='Semua soal selesai!';$('n2').style.display='inline-block'}}
+
+// Latihan 2
+const L2=[["Kertas dirobek menjadi kecil-kecil termasuk perubahan...","Fisika","Kimia"],["Besi berkarat termasuk perubahan...","Kimia","Fisika"]];
+let done2=0;
+$('p2').innerHTML=L2.map((q,i)=>`<p><b>${i+1}. ${q[0]}</b></p><div id="o${i}">${sh([q[1],q[2]]).map(o=>`<button class="opt" onclick="ans2(${i},this,'${o}')">${o}</button>`).join('')}</div>`).join('');
+function ans2(i,b,o){const box=$('o'+i);[...box.children].forEach(c=>{c.disabled=true;if(c.textContent===L2[i][1])c.classList.add('ok');else if(c===b)c.classList.add('no')});if(++done2===2)$('b4').style.display='inline-block'}
+
+// Quiz
+const Q=[
+{q:"Emas (Au) termasuk jenis zat...",m:0,o:[["Unsur logam",1],["Senyawa",0],["Campuran",0],["10+6=17",0]]},
+{q:"Lambang unsur besi adalah...",m:0,o:[["Fe",1],["Be",0],["Fr",0],["Ndak tahu kok tanya saya",0]]},
+{q:"Pilih SEMUA ciri perubahan kimia:",m:1,o:[["Terbentuk gas",1],["Terjadi perubahan warna",1],["Terbentuk endapan",1],["Perubahan dari walikota solo menjadi wapres",0]]},
+{q:"Pilih SEMUA pernyataan yang benar tentang perubahan kimia/fisika:",m:1,o:[["Es mencair = perubahan fisika",1],["Kayu terbakar = perubahan kimia",1],["Besi berkarat = perubahan kimia",1],["lawyer = tahun baru",0]]},
+{q:"Pilih SEMUA ciri perubahan fisika:",m:1,o:[["Tidak terbentuk zat baru",1],["Hanya bentuk atau wujud yang berubah",1],["Terbentuk gas dan endapan baru",0],["ngupas bawang dibayar Rp.700.000",0]]}];
+let qi=0,score=0,order=[];
+function startQuiz(){qi=0;score=0;order=Q.map(q=>sh(q.o));go('quiz');showQ()}
+function showQ(){const q=Q[qi];$('qbox').innerHTML=`<div class="tag">Soal ${qi+1} dari 5${q.m?' • pilih semua yang benar':''}</div><h3>${q.q}</h3><div id="qo">${order[qi].map((o,i)=>`<button class="opt" onclick="pick(${i},this)">${o[0]}</button>`).join('')}</div><div class="fb" id="qf"></div><div id="qa">${q.m?'<button class="btn" onclick="check()">Jawab</button>':''}</div>`}
+function pick(i,b){const q=Q[qi];if(q.m){b.classList.toggle('sel')}else{reveal([i])}}
+function check(){const s=[...$('qo').children].map((c,i)=>c.classList.contains('sel')?i:-1).filter(i=>i>=0);if(!s.length){$('qf').textContent='Pilih minimal satu.';return}reveal(s)}
+function reveal(sel){const o=order[qi];let c=0,w=0;[...$('qo').children].forEach((b,i)=>{b.disabled=true;b.classList.remove('sel');if(o[i][1])b.classList.add('ok');else if(sel.includes(i))b.classList.add('no');if(sel.includes(i))o[i][1]?c++:w++});const p=Math.max(0,c-w);score+=p;$('qf').className='fb '+(p?'good':'bad');$('qf').textContent=`Poin soal ini: ${p}`;$('qa').innerHTML=qi<4?'<button class="btn" onclick="qi++;showQ()">Next question →</button>':'<button class="btn" onclick="result()">Lihat hasil</button>'}
+function result(){confetti();const m=score<=5?"Belajar yang bener jangan tidur mulu":score<=7?"Belajar lagi di rumah":score<=9?"wah ini si my type gw banget":"Udah cocok jadi nyalon wapres ini mah";$('qbox').innerHTML=`<div class="center"><div class="tag">Nilai kamu</div><h1 style="font-size:4rem;margin:8px">${score}/10</h1><h3>${m}</h3><button class="btn alt" onclick="startQuiz()">Ulangi</button> <button class="btn" onclick="go('home')">🏠 Back home</button></div>`}
+
+// Game
+const G=[
+["Zat tunggal yang tidak dapat diuraikan lagi secara kimia disebut...","Unsur","Senyawa","Campuran","Larutan"],
+["H₂O termasuk...","Senyawa","Unsur","Campuran","Logam"],
+["Lambang unsur besi adalah...","Fe","Fo","B","Ir"],
+["Lambang unsur natrium adalah...","Na","N","Ni","Nt"],
+["Lambang unsur kalium adalah...","K","Ka","P","Kl"],
+["Contoh unsur logam adalah...","Tembaga","Oksigen","Belerang","Air"],
+["Contoh unsur nonlogam adalah...","Karbon","Aluminium","Seng","Perak"],
+["Contoh semilogam adalah...","Silikon","Natrium","Klorin","Emas"],
+["Udara termasuk...","Campuran","Unsur","Senyawa","Logam"],
+["Garam dapur NaCl termasuk...","Senyawa","Unsur","Campuran","Semilogam"],
+["Air gula termasuk...","Campuran homogen","Unsur","Senyawa","Campuran heterogen"],
+["Pasir dan air termasuk campuran...","Heterogen","Homogen","Senyawa","Unsur"],
+["Ciri senyawa adalah...","Perbandingan unsur tetap","Perbandingan bebas","Tidak bisa diuraikan","Sifat unsur tetap"],
+["Ciri campuran adalah...","Perbandingan zat tidak tetap","Perbandingan massa tetap","Sifat zat hilang","Hanya satu unsur"],
+["Es mencair adalah perubahan...","Fisika","Kimia","Nuklir","Biologi saja"],
+["Kayu terbakar adalah perubahan...","Kimia","Fisika","Wujud","Ukuran"],
+["Besi berkarat adalah perubahan...","Kimia","Fisika","Wujud","Bentuk"],
+["Ciri perubahan fisika adalah...","Tidak terbentuk zat baru","Terbentuk gas","Terbentuk endapan","Berubah warna permanen"],
+["Ciri perubahan kimia adalah...","Terbentuk zat baru","Hanya wujud berubah","Hanya ukuran berubah","Tidak ada zat baru"],
+["Contoh perubahan kimia...","Fermentasi tape","Air membeku","Kertas disobek","Gula larut"],
+["Contoh perubahan fisika...","Menjemur pakaian","Roti berjamur","Besi berkarat","Makanan basi"],
+["Air menguap termasuk perubahan...","Fisika","Kimia","Pembakaran","Fermentasi"],
+["Susu menjadi basi termasuk perubahan...","Kimia","Fisika","Wujud","Ukuran"],
+["Gula larut dalam air adalah perubahan...","Fisika","Kimia","Pembakaran","Fotosintesis"],
+["Pembakaran bensin adalah perubahan...","Kimia","Fisika","Wujud","Bentuk"],
+["Terbentuknya gelembung gas saat reaksi adalah ciri perubahan...","Kimia","Fisika","Wujud","Ukuran"],
+["Memisahkan pasir dari air dengan penyaringan adalah...","Pemisahan campuran","Reaksi kimia","Pembuatan senyawa","Penguraian unsur"],
+["Fotosintesis termasuk perubahan...","Kimia","Fisika","Wujud","Ukuran"],
+["Lambang unsur oksigen adalah...","O","Ok","Ox","Og"],
+["Lambang unsur karbon adalah...","C","Ca","Cr","K"],
+["Lambang unsur emas adalah...","Au","Ag","Em","Go"],
+["Lambang unsur perak adalah...","Ag","Au","Pe","Pk"],
+["Sifat logam adalah...","Mengilap dan menghantarkan listrik","Rapuh dan isolator","Tidak mengilap","Tidak bisa ditempa"],
+["Kertas dibakar menjadi abu adalah perubahan...","Kimia","Fisika","Wujud","Ukuran"],
+["Es batu dipecah kecil-kecil adalah perubahan...","Fisika","Kimia","Pembakaran","Fermentasi"],
+["Mengkristal/membeku adalah perubahan...","Wujud (fisika)","Kimia","Pembakaran","Fotosintesis"],
+["Zat yang terdiri dari dua unsur atau lebih bersenyawa disebut...","Senyawa","Unsur","Campuran","Atom"]];
+let pool=[],bd=[],turn='X',over=false,names={X:'X',O:'O'},cur=-1;
+function nextQ(){if(!pool.length)pool=sh(G.map((_,i)=>i));return G[pool.pop()]}
+function startGame(){names.X=$('pX').value.trim()||'Pemain X';names.O=$('pO').value.trim()||'Pemain O';bd=Array(9).fill('');turn='X';over=false;$('gsetup').style.display='none';$('gplay').style.display='block';$('gmsg').textContent='';drawB()}
+function drawB(){$('board').innerHTML=bd.map((v,i)=>`<button class="cell" onclick="cellClick(${i})">${v}</button>`).join('');if(!over)$('gturn').textContent=`Giliran ${names[turn]} (${turn})`}
+function cellClick(i){if(over||bd[i])return;cur=i;const q=nextQ();const o=sh(q.slice(2).map((t,k)=>[t,k===0]));
+$('gq').innerHTML=`<div class="tag">${names[turn]} (${turn}) menjawab</div><h3>${q[0]}</h3>`+o.map((x,k)=>`<button class="opt" onclick="gans(this,${x[1]})">${x[0]}</button>`).join('')+'<div class="fb" id="gfb"></div>';
+$('gmodal').classList.add('on');
+window._o=o}
+function gans(b,ok){const btns=[...$('gq').querySelectorAll('.opt')];btns.forEach((x,k)=>{x.disabled=true;if(window._o[k][1])x.classList.add('ok')});if(!ok)b.classList.add('no');
+setTimeout(()=>{$('gmodal').classList.remove('on');if(ok){bd[cur]=turn;$('gmsg').className='fb good';$('gmsg').textContent=`${names[turn]} benar! Tanda dipasang.`;const w=win();if(w){over=true;$('gturn').textContent=`🏆 ${names[w]} menang!`;drawB();return}if(bd.every(Boolean)){over=true;$('gturn').textContent='Seri!';drawB();return}}else{$('gmsg').className='fb bad';$('gmsg').textContent=`${names[turn]} salah, giliran dilewati.`}
+turn=turn==='X'?'O':'X';drawB()},900)}
+function win(){const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];for(const[a,b,c]of L)if(bd[a]&&bd[a]===bd[b]&&bd[a]===bd[c])return bd[a];return null}
+</script></body></html>
